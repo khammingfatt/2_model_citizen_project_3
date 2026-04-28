@@ -4,9 +4,15 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
+from pathlib import Path
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# ─────────────────────────────────────────────
+# PATHS  — always resolve relative to this script (src/)
+# ─────────────────────────────────────────────
+DATA_DIR = Path(__file__).parent
 
 # ─────────────────────────────────────────────
 # PAGE CONFIG
@@ -193,18 +199,18 @@ def _clean(df):
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_data():
-    train = _clean(pd.read_csv("train_clean_working.csv", low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
     return train
 
 @st.cache_data(show_spinner="Loading full dataset for comparables…")
 def load_all_data():
-    train = _clean(pd.read_csv("train_clean_working.csv", low_memory=False))
-    test  = _clean(pd.read_csv("test_clean_working.csv",  low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
+    test  = _clean(pd.read_csv(DATA_DIR / "test_clean_working.csv",  low_memory=False))
     return pd.concat([train, test], ignore_index=True)
 
 @st.cache_resource(show_spinner="Loading prediction model…")
 def load_model():
-    with open("model.pkl", "rb") as f:
+    with open(DATA_DIR / "model.pkl", "rb") as f:
         return pickle.load(f)
 
 
