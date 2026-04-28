@@ -88,12 +88,12 @@ def _clean(data):
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_data():
-    return _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
+    return _clean(pd.read_csv(DATA_DIR / "train_sample.csv", low_memory=False))
 
 @st.cache_data(show_spinner="Loading full dataset for comparables…")
 def load_all_data():
-    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
-    test  = _clean(pd.read_csv(DATA_DIR / "test_clean_working.csv",  low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_sample.csv", low_memory=False))
+    test  = _clean(pd.read_csv(DATA_DIR / "test_sample.csv",  low_memory=False))
     return pd.concat([train, test], ignore_index=True)
 
 @st.cache_resource(show_spinner="Loading prediction model…")

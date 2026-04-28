@@ -186,7 +186,8 @@ def _clean(df):
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
     for col in ["resale_price", "floor_area_sqm", "hdb_age", "mid"]:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
     # Add town_encoded and flat_type_encoded (LabelEncoder — alphabetical order)
     towns_sorted = sorted(df["town"].dropna().unique().tolist())
     town_map = {t: i for i, t in enumerate(towns_sorted)}
@@ -199,13 +200,13 @@ def _clean(df):
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_data():
-    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_sample.csv", low_memory=False))
     return train
 
 @st.cache_data(show_spinner="Loading full dataset for comparables…")
 def load_all_data():
-    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
-    test  = _clean(pd.read_csv(DATA_DIR / "test_clean_working.csv",  low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_sample.csv", low_memory=False))
+    test  = _clean(pd.read_csv(DATA_DIR / "test_sample.csv",  low_memory=False))
     return pd.concat([train, test], ignore_index=True)
 
 @st.cache_resource(show_spinner="Loading prediction model…")
@@ -516,12 +517,12 @@ with tab2:
             y_ = _df["resale_price"]
             X_tr_, X_te_, y_tr_, y_te_ = train_test_split(X_, y_, test_size=0.10, random_state=42)
             model_ = RandomForestRegressor(
-                n_estimators=300,
-                max_depth=None,
+                n_estimators=100,
+                max_depth=10,
                 random_state=42,
                 n_jobs=-1,
             )
-            with st.spinner("Training Random Forest on selected features… this may take ~15–30 seconds."):
+            with st.spinner("Training Random Forest on selected features… this may take ~10–20 seconds."):
                 model_.fit(X_tr_, y_tr_)
             return model_, X_tr_, X_te_, y_tr_, y_te_
 
@@ -682,7 +683,7 @@ with tab3:
             y_ = _df["resale_price"]
             X_tr_, X_te_, y_tr_, y_te_ = train_test_split(X_, y_, test_size=0.10, random_state=42)
             model_ = xgb.XGBRegressor(
-                n_estimators=500,
+                n_estimators=200,
                 learning_rate=0.05,
                 max_depth=6,
                 subsample=0.8,
@@ -691,7 +692,7 @@ with tab3:
                 random_state=42,
                 verbosity=0,
             )
-            with st.spinner("Training XGBoost on selected features… this may take ~10–20 seconds."):
+            with st.spinner("Training XGBoost on selected features… this may take ~5–10 seconds."):
                 model_.fit(X_tr_, y_tr_)
             return model_, X_tr_, X_te_, y_tr_, y_te_
 

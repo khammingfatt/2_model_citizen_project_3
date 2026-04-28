@@ -31,3 +31,9 @@ build/
 
 # Streamlit secrets (never commit this)
 .streamlit/secrets.toml
+
+# Large original data files (too big for GitHub — use train_sample.csv / test_sample.csv instead)
+src/train_clean_working.csv
+src/test_clean_working.csv
+train_clean_working.csv
+test_clean_working.csv

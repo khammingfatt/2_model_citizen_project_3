@@ -83,7 +83,7 @@ def _clean(data):
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_data():
-    return _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
+    return _clean(pd.read_csv(DATA_DIR / "train_sample.csv", low_memory=False))
 
 df = load_data()
 
@@ -313,8 +313,8 @@ with tab2:
             _d = df[feats + ["resale_price"]].dropna()
             X_tr_, X_te_, y_tr_, y_te_ = train_test_split(_d[feats], _d["resale_price"],
                                                             test_size=0.10, random_state=42)
-            m = RandomForestRegressor(n_estimators=300, max_depth=None, random_state=42, n_jobs=-1)
-            with st.spinner("Training Random Forest… this may take ~15–30 seconds."):
+            m = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42, n_jobs=-1)
+            with st.spinner("Training Random Forest… this may take ~10–20 seconds."):
                 m.fit(X_tr_, y_tr_)
             return m, X_tr_, X_te_, y_tr_, y_te_
 
@@ -377,10 +377,10 @@ with tab3:
             _d = df[feats + ["resale_price"]].dropna()
             X_tr_, X_te_, y_tr_, y_te_ = train_test_split(_d[feats], _d["resale_price"],
                                                             test_size=0.10, random_state=42)
-            m = xgb.XGBRegressor(n_estimators=500, learning_rate=0.05, max_depth=6,
+            m = xgb.XGBRegressor(n_estimators=200, learning_rate=0.05, max_depth=6,
                                   subsample=0.8, colsample_bytree=0.8,
                                   objective="reg:squarederror", random_state=42, verbosity=0)
-            with st.spinner("Training XGBoost… this may take ~10–20 seconds."):
+            with st.spinner("Training XGBoost… this may take ~5–10 seconds."):
                 m.fit(X_tr_, y_tr_)
             return m, X_tr_, X_te_, y_tr_, y_te_
 
