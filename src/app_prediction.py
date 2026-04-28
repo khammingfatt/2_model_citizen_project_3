@@ -3,7 +3,13 @@ import pandas as pd
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+from pathlib import Path
 from sklearn.model_selection import train_test_split
+
+# ─────────────────────────────────────────────
+# PATHS  — always resolve relative to this script (src/)
+# ─────────────────────────────────────────────
+DATA_DIR = Path(__file__).parent
 
 # ─────────────────────────────────────────────
 # PAGE CONFIG
@@ -82,17 +88,17 @@ def _clean(data):
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_data():
-    return _clean(pd.read_csv("train_clean_working.csv", low_memory=False))
+    return _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
 
 @st.cache_data(show_spinner="Loading full dataset for comparables…")
 def load_all_data():
-    train = _clean(pd.read_csv("train_clean_working.csv", low_memory=False))
-    test  = _clean(pd.read_csv("test_clean_working.csv",  low_memory=False))
+    train = _clean(pd.read_csv(DATA_DIR / "train_clean_working.csv", low_memory=False))
+    test  = _clean(pd.read_csv(DATA_DIR / "test_clean_working.csv",  low_memory=False))
     return pd.concat([train, test], ignore_index=True)
 
 @st.cache_resource(show_spinner="Loading prediction model…")
 def load_model():
-    with open("model.pkl", "rb") as f:
+    with open(DATA_DIR / "model.pkl", "rb") as f:
         return pickle.load(f)
 
 
